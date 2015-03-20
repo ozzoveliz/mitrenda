@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Dotsquares_Maintenancemode>
+            <version>0.1.2</version>
+        </Dotsquares_Maintenancemode>
+    </modules>
+    <frontend>
+        <routers>
+            <maintenancemode>
+                <use>standard</use>
+                <args>
+                    <module>Dotsquares_Maintenancemode</module>
+                    <frontName>maintenancemode</frontName>
+                </args>
+            </maintenancemode>
+        </routers>
+    </frontend>
+    <admin>
+        <routers>
+            <maintenancemode>
+                <use>admin</use>
+                <args>
+                    <module>Dotsquares_Maintenancemode</module>
+                    <frontName>maintenancemode</frontName>
+                </args>
+            </maintenancemode>
+        </routers>
+    </admin>
+    <adminhtml>
+        <acl>
+			<resources>
+                <all>
+                    <title>Allow Everything</title>
+                </all>
+				<admin>
+					<children>
+						<system>
+							<children>
+								<config>
+									<children>
+										<maintenancemode translate="title" module="maintenancemode">
+											<title>Maintenancemode</title>
+										</maintenancemode>
+									</children>
+								</config>
+							</children>
+						</system>
+					</children>
+				</admin>
+			</resources>
+        </acl>
+    </adminhtml>   
+    <global>
+        <models>
+            <maintenancemode>
+                <class>Dotsquares_Maintenancemode_Model</class>
+            </maintenancemode>
+        </models>
+        <helpers>
+            <maintenancemode>
+                <class>Dotsquares_Maintenancemode_Helper</class>
+            </maintenancemode>
+        </helpers>
+        <events>
+            <controller_front_init_routers>
+                <observers>
+                    <maintenancemode>
+                        <type>singleton</type>
+                        <class>maintenancemode/observer</class>
+                        <method>initControllerRouters</method>
+                    </maintenancemode>
+                </observers>
+            </controller_front_init_routers>
+			
+             <admin_system_config_changed_section_maintenancemode>
+                <observers>
+                    <maintenancemode_section>
+                        <class>maintenancemode/observer</class>
+                        <method>adminSystemConfigChangedSectionMaintenancemode</method>
+                    </maintenancemode_section>
+                </observers>
+            </admin_system_config_changed_section_maintenancemode>
+        </events>
+
+    </global>
+    <default>
+        <maintenancemode>
+            <general>
+                <allowforadmin>1</allowforadmin>
+				<enable_time>NULL</enable_time>
+                <maintenanceText><![CDATA[
+<div id="header" class="clearfix">
+<div class="container">
+<h2>We are sorry, this site is down for maintenance.</h2>
+<p>Please check back once the updates have taken place.</p>
+</div>
+</div>]]></maintenanceText>
+            </general>
+        </maintenancemode>
+    </default>
+</config>

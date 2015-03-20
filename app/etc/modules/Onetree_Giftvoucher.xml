@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Onetree_Giftvoucher>
+            <active>true</active>
+            <codePool>local</codePool>
+            <depends>
+                <Magestore_Giftvoucher/>
+
+            </depends>
+        </Onetree_Giftvoucher>
+    </modules>
+</config>

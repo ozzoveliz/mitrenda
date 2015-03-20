@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $this->getLang() ?>"
+      lang="<?php echo $this->getLang() ?>">
+    <head>
+        <link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl("maintenancemode/css/maintenancemode.css") ?>"/>
+        <script type="text/javascript" src="<?php echo $this->getSkinUrl("maintenancemode/js/jquery-2.0.3.js") ?>"></script>
+        <script type="text/javascript" src="<?php echo $this->getSkinUrl("maintenancemode/js/jquery.countdownTimer.js") ?>"></script>
+        <title>Store Maintenance</title>
+    </head>
+    <body>
+
+        <!-- [start] center -->
+        <div class="top-stripe"></div>
+        <div class="center">
+            <div class="main-hold">
+
+                <img class="logo" src="<?php echo $this->getSkinUrl(Mage::getStoreConfig('design/header/logo_src')); ?>"/>
+
+                <div class="text-box">
+
+                    <?php
+                    $storeId = Mage::app()->getStore()->getStoreId();
+                    $maintenancePage = trim(Mage::getStoreConfig('maintenancemode/general/maintenanceText', $storeId));
+                    echo $maintenancePage;
+                    ?>
+
+                    <?php if (Mage::getStoreConfig('maintenancemode/timer/timer_enabled', $storeId) == 1): ?>
+                        <div style="display: none;">
+                            <br>
+                            <div class="message clearfix" id="timer-text">
+                                <?php $text = Mage::getStoreConfig('maintenancemode/timer/timer_text', $storeId); ?>
+                                <h2 id="launch-text"><?php echo $text; ?></h2>
+                            </div>
+
+                            <form method="post" name="dummy" id="dummy-form">
+                                <input type="hidden" value="yes"/>
+                                <input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey(); ?>"/>
+                            </form>
+                            <script>
+                                function submitAndReloadArea() {
+
+                                    var url = '<?php echo $this->getUrl("maintenancemode/index/postDisable") ?>';//Form.serializeElements(fields, true);
+                                    url = url + (url.match(new RegExp('\\?')) ? '&isAjax=true' : '?isAjax=true');
+
+                                    var data = jQuery('#dummy-form').serialize();
+                                    jQuery.ajax({
+                                        url: url,
+                                        dataType: 'json',
+                                        type: 'post',
+                                        data: data,
+                                        success: function (data) {
+                                            if (data.result == 'success') {
+                                                jQuery('.countdown').hide();
+                                                location.reload(true);
+                                            } else {
+                                                location.reload(true);
+                                            }
+                                        }
+                                    });
+                                }
+                            </script>
+                            <div class="countdown">
+                                <div class="timer" id="timer-table">
+
+                                    <table style="border:0px;">
+                                        <tr>
+                                            <td style="width:60px;text-align:center;">Dias</td>
+                                            <td style="width:70px;text-align:center;">Horas</td>
+                                            <td style="width:60px;text-align:center;">Minutos</td>
+                                            <td style="width:70px;text-align:center;">Segundos</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4"><span id="given_date"></span></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <?php
+                            $total_hour = Mage::getStoreConfig('maintenancemode/timer/total_hour', $storeId);
+                            $total_min = Mage::getStoreConfig('maintenancemode/timer/total_min', $storeId);
+
+
+                            $enabledDateTime = Mage::getStoreConfig('maintenancemode/general/enable_time', $storeId);
+                            $givenDate = strtotime($enabledDateTime);
+                            $endDateTime = date('Y/m/d H:i:s', strtotime("+$total_hour hours +$total_min minutes", $givenDate));
+                            $currentDatetime = Mage::getModel('core/date')->date('Y/m/d H:i:s');
+                            $start_date = new DateTime($endDateTime);
+                            $since_start = $start_date->diff(new DateTime($currentDatetime));
+                            ?>
+
+                            <script>
+                                jQuery(function () {
+                                    jQuery("#given_date").countdowntimer({
+                                        startDate: "<?php echo $currentDatetime;?>",
+                                        dateAndTime: "<?php echo $endDateTime;?>",
+                                        size: "lg",
+                                        timeUp: submitAndReloadArea
+                                    });
+                                });
+                            </script>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+            </div>
+        </div>
+        <div class="bot-stripe"></div>
+        <!-- [end] center -->
+
+    </body>
+</html>

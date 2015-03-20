@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<config>
+	<tabs>
+		<ultimo translate="label" module="ultimo">
+			<label>Ultimo (1.5.9)</label>
+			<sort_order>151</sort_order>
+			<class>ultimo</class>
+		</ultimo>
+	</tabs>
+	<sections>
+		<ultimo translate="label" module="ultimo">
+			<label>Theme Settings</label>
+			<tab>ultimo</tab>
+			<frontend_type>text</frontend_type>
+			<sort_order>10</sort_order>
+			<show_in_default>1</show_in_default>
+			<show_in_website>1</show_in_website>
+			<show_in_store>1</show_in_store>
+			<groups>
+				<product_labels translate="label">
+					<label>Product Labels</label>
+					<frontend_type>text</frontend_type>
+					<sort_order>220</sort_order>
+					<show_in_default>1</show_in_default>
+					<show_in_website>1</show_in_website>
+					<show_in_store>1</show_in_store>
+					<fields>
+						<new translate="label">
+							<label>Show "New" Label</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>10</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</new>
+						<sale translate="label">
+							<label>Show "Sale" Label</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>20</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</sale>
+                        <sale_show_image translate="label">
+                            <label>Show Image "Sale" Label</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <sale>1</sale>
+                            </depends>
+                        </sale_show_image>
+                        <sale_image translate="label">
+                            <label>Logo Sale</label>
+                            <comment>Allowed file types: jpeg, gif, png.</comment>
+                            <frontend_type>image</frontend_type>
+                            <backend_model>adminhtml/system_config_backend_image</backend_model>
+                            <upload_dir config="system/filesystem/media" scope_info="1">ciber</upload_dir>
+                            <base_url type="media" scope_info="1">ciber</base_url>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends>
+                                <sale>1</sale>
+                                <sale_show_image>1</sale_show_image>
+                            </depends>
+                        </sale_image>
+
+					</fields>
+				</product_labels>
+			</groups>
+		</ultimo>
+	</sections>
+</config> 

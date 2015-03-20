@@ -1,0 +1,234 @@
+﻿<!--@subject Una gift card de {{htmlescape var=$sendername}} @-->
+<!--@vars
+{"htmlescape var=$name":"Recipient Name",
+"htmlescape var=$sendername":"Sender name",
+"var code":"Gift Card Code",
+"var balance":"Gift Card Balance",
+"var status":"Status",
+"htmlescape var=$message":"Message",
+"var expiredat":"Expired At"}
+@-->
+
+<!--@styles
+body,td { background:#FFFFFF; margin:0; padding:0; color:#2f2f2f; font:13px/1.35em Verdana, Arial, Helvetica, sans-serif; }
+pre{ white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;}
+@font-face {
+    font-family: 'simplicitymedium';
+    src: url('http://www.mitrenda.com/skin/frontend/ultimo/mitrenda/fonts/simplicity-webfont.eot');
+    src: url('http://www.mitrenda.com/skin/frontend/ultimo/mitrenda/fonts/simplicity-webfont.eot?#iefix') format('embedded-opentype'),
+    url('http://www.mitrenda.com/skin/frontend/ultimo/mitrenda/fonts/simplicity-webfont.woff2') format('woff2'),
+    url('http://www.mitrenda.com/skin/frontend/ultimo/mitrenda/fonts/simplicity-webfont.woff') format('woff'),
+    url('http://www.mitrenda.com/skin/frontend/ultimo/mitrenda/fonts/simplicity-webfont.ttf') format('truetype'),
+    url('http://www.mitrenda.com/skin/frontend/ultimo/mitrenda/fonts/simplicity-webfont.svg#simplicitymedium') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+@font-face {
+    font-family: 'mf_really_awesomeregular';
+    src: url('http://www.mitrenda.com/skin/frontend/ultimo/mitrenda/fonts/mf_really_awesome-webfont.eot');
+    src: url('http://www.mitrenda.com/skin/frontend/ultimo/mitrenda/fonts/mf_really_awesome-webfont.eot?#iefix') format('embedded-opentype'),
+    url('http://www.mitrenda.com/skin/frontend/ultimo/mitrenda/fonts/mf_really_awesome-webfont.woff2') format('woff2'),
+    url('http://www.mitrenda.com/skin/frontend/ultimo/mitrenda/fonts/mf_really_awesome-webfont.woff') format('woff'),
+    url('http://www.mitrenda.com/skin/frontend/ultimo/mitrenda/fonts/mf_really_awesome-webfont.ttf') format('truetype'),
+    url('http://www.mitrenda.com/skin/frontend/ultimo/mitrenda/fonts/mf_really_awesome-webfont.svg#mf_really_awesomeregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+@-->
+
+<div style="font:13px/1.35em Verdana, Arial, Helvetica, sans-serif;">
+    <table cellspacing="0" cellpadding="0" border="0" width="98%" style="margin-top:10px; font:11px/1.35em Verdana, Arial, Helvetica, sans-serif; margin-bottom:10px;">
+        <tr>
+            <td align="center" valign="top">
+                <!-- [ header starts here] -->
+                <table cellspacing="0" cellpadding="0" border="0" width="660">
+                    <tr>
+                        <td valign="top">
+                            <a href="{{store url=""}}">
+                                <img src="{{skin url="images/logo.png" _area='frontend'}}" alt="{{var store.getFrontendName()}}"  style="margin-bottom:10px;" border="0"/>
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- [ middle starts here] -->
+                <table cellspacing="0" cellpadding="0" border="0" width="660">
+                    <tr>
+                        <td valign="top">
+                            <p>
+                                <strong>Hola {{htmlescape var=$name}}!</strong>,<br/>
+                                Nos complace informarle que <strong>{{htmlescape var=$sendername}}</strong> te ha enviado de regalo una GIFT CARD (N&uacute;mero: {{var code}}) de Mitrenda.com<br/>
+                                Puedes utilizar dicho código para comprar productos en nuestra <a href="{{store url=""}}" style="color:#1E7EC8;">tienda online</a> o agragarlo a tu cuenta para utilizarlo en un futuro haciendo click <a href="{{var addurl}}"> aqu&iacute;</a>.<br/>
+                                Imprimir Gift Card <a href="{{store url=""}}giftvoucher/index/printemail/k/{{var secure_key}}">ahora</a></br>
+                            </p>
+                            <p>
+                            {{depend back}}
+                            <div>
+                                <div style="width: 600px;padding-top: 0px; height: 365px;font-size: 14px;background-image:url({{var image}})">
+                                    <div style="position: relative;margin: 0 0 10px 0;width: 600px; height: 35px; margin-right:57px;padding-top: 189px;">
+                                        <div style="width: 269px; height: 35px;float: right;display: inline-block;">
+                                            <div class="giftcard-style-color giftcard-price-change" style="font-size: 18px; line-height: 35px;float:right; height: 23px;padding-right: 11px;color: {{var style}}; font-weight: bold; font-family: time new roman;display: inline-block;">{{var balance}}</div>
+                                            <div style="color: {{var text}};display: inline-block;font-size: 18px;font-weight: bold;line-height: 35px;float:right;">GIFT CARD:&nbsp;</div>
+                                        </div>
+                                        <div style="width: 300px; min-height: 35px;float: left;display: inline-block;">
+                                            <div style="min-height: 35px;">
+                                                <span class="giftcard-style-color" style="color: {{var style}}; font-weight: bold;font-family: time new roman;font-size: 18px;font-weight: bold;line-height: 35px;padding-left: 16px;">{{var code}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="width: 200px;height: 35px;font-size: 16px;display: inline-block;float: left;">
+                                        <div style="width: 95%; float: left; padding-left: 16px;width: 95%;">
+                                            <label style="font-style: italic;color: {{var text}}; font-family: simplicitymedium;font-size: 18px;">Para: </label>
+                                            <span style="color: {{var style}}">{{var receivename}}</span>
+                                        </div>
+                                        <div style="width: 95%; float: left; padding-left: 16px;width: 95%;margin-top: 8px;">
+                                            <label style="font-style: italic; color: {{var text}}; font-family: time new roman;font-size: 18px;">De:</label>
+                                            <span style="color: {{var style}}">{{var sendername}}</span>
+                                        </div>
+                                    </div>
+                                    <div style="box-shadow:0 0 0 1px #686868;position: relative;width: 379px; height: 100px;margin-right: 11px;float: right;box-shadow: 0 0 0 1px #686868;border-radius: 5px;border: 2px solid #000;">
+                                        <div style="border-radius: 5px;background: #fff;padding: 5px 5px; padding-bottom: 9px; width: 600px; height: 89px; display:table-cell; vertical-align: middle;">
+                                            <table style="height:96px;width: 100%;">
+                                                <tr>
+                                                    <td style="vertical-align:top; color: {{var text}}">
+                                                        <div style="max-height: 85px; overflow: hidden; font-size: 11px" >{{var message}}</div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>    
+                                </div>
+                            </div>
+                            {{/depend}}
+                            {{depend top}}
+                            <div style="width: 655px; height: 400px;font-size: 14px;">
+                                <img src="{{var image}}" width="655" height="150" />
+                                <div style="width: 615px; height: 220px; padding: 20px; padding-top: 10px;background-image:url({{var background}})">
+                                    <div style="width: 615px; height: 70px;">
+                                        <div style="width: 455px; height: 70px; font-size: 40px; font-style: italic; color: orange;float: left; padding-top: 10px">
+                                            {{if logo}}
+                                            <img src="{{var logo}}" height="50" style="float:left"/>
+                                            {{else}}
+                                            <img src="{{skin url="images/logo.png" _area='frontend'}}" height="50" style="float:left"/>
+                                            {{/if}}
+                                            <span style="line-height: 55px; font-size: 40px; font-style: italic; color: {{var style}}; float: left; margin-left: 20px; font-family: time new roman">{{var template.caption}}</span>
+                                        </div>
+                                        <div style="width: 160px; height: 70px; float: left;">
+                                            <div style="text-align: right; width: 160px;height: 21px; color: {{var text}}">valor</div>
+                                            <div style="width: 160px; text-align: right; font-size: 25px;height: 50px; line-height:40px; color: {{var style}}; font-weight: bold">{{var balance}}</div>
+                                        </div>
+                                    </div>
+                                    <div style="width: 615px; height: 25px;">
+                                        <div style="width: 320px; height: 25px; padding-left: 5px; float: left;font-size: 16px;">
+                                            <span style="margin-right: 15px">
+                                                <label for="giftcard-from" style="font-style: italic; color: {{var text}}; font-family: time new roman">de:</label>
+                                                <span style="color: {{var style}};">{{var sendername}}</span>
+                                            </span>
+                                            |
+                                            <span style="margin-left: 15px">
+                                                <label for="giftcard-to" style="font-style: italic;color: {{var text}}; font-family: time new roman">para: </label>
+                                                <span style="color: {{var style}};">{{var receivename}}</span>
+                                            </span>
+                                        </div>
+                                        <div style="width: 290px; float: left; text-align: right;font-size: 14px;">
+                                            <span style="width: 290px;">
+                                                <label style="color: {{var text}}">N&uacute;mero de la tarjeta:</label>
+                                                {{if barcode}}
+                                                <span style="color: {{var style}}; font-weight: bold; font-family: time new roman">{{var code}}</span>
+                                                {{/if}}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div style="position: relative; width: 615px; height: 120px;">
+                                        <div style="float: left;width: 340px; height: 100px;margin-top: 20px; ">
+                                            <div style="background-image: url({{skin url='images/giftvoucher/box-message.png' _area='frontend'}}); padding: 0 5px; padding-bottom: 9px; width: 340px; height: 91px;display:table-cell; vertical-align: middle"><table width='100%' style="height:85px"><tr><td style="vertical-align:middle; color: {{var text}}"><div style="max-height: 85px; overflow: hidden; font-size: 11px" >{{var message}}</div></td></tr></table></div>
+                                        </div>
+                                        <div style="float: left; width: 275px;text-align: right">
+                                            <span style="width: 180px; height: 50px ">
+                                                {{if barcode}}
+                                                <img src="{{var barcode}}" {{var resize}}/>
+                                                {{else}}
+                                                <div style="font-size: 24px;line-height: 35px; color: {{var style}}; font-weight: bold;font-family: time new roman">{{var code}}</div>
+                                                {{/if}}
+                                            </span>
+<!--                                            <div style="height: 5px"></div>-->
+                                            <div style="width: 260px; height: 63px; overflow: hidden; padding-left: 15px; margin-top: 5px;display:table-cell; vertical-align: bottom">
+                                                <p style="font-size: 11px; line-height: 15px; margin: 0; color: {{var text}}">{{var note}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {{/depend}}
+                            {{depend left}}
+                            <div style="width: 655px; height: 400px;font-size: 14px;">
+                                <div style="width: 275px; height: 50px; padding-top: 300px; padding-bottom: 35px; float: left; background-image: url({{var image}})">
+                                    <div style="width: 275px; height: 50px; padding:5px; background:#fff;; display: table-cell; vertical-align: middle; text-align: center">
+                                        {{if logo}}
+                                        <img src="{{var logo}}" height="50"/>
+                                        {{else}}
+                                        <img src="{{skin url="images/logo.png" _area='frontend'}}" height="50"/>
+                                        {{/if}}
+                                    </div>
+                                </div>
+                                <div style="width: 340px; height: 360px; padding: 20px;float: left; background-image: url({{var background}})">
+                                    <div style="width: 340px; height: 60px; line-height: 40px; font-size: 40px; font-style: italic; color: {{var style}}; font-family: time new roman">
+                                        {{var template.caption}}
+                                    </div>
+                                    <div style="width: 340px;font-size: 16px; height: 35px">
+                                        <span style="margin-right: 15px">
+                                            <label style="font-style: italic;color: {{var text}}; font-family: time new roman">de:</label>
+                                            <span style="color: {{var style}};">{{var sendername}}</span>
+                                        </span>
+                                        |
+                                        <span style="margin-left: 15px">
+                                            <label for="giftcard-to" style="font-style: italic;color: {{var text}}; font-family: time new roman">para: </label>
+                                            <span style="color: {{var style}};">{{var receivename}}</span>
+                                        </span>
+                                    </div>
+                                    <div style="width: 340px; height: 100px;background-image: url({{skin url='images/giftvoucher/box-message.png' _area='frontend'}})">
+                                        <div style="padding: 0 5px; padding-bottom: 9px; width: 330px; height: 91px;display:table-cell; vertical-align: middle;"><table style="height:85px;"><tr><td style="vertical-align:middle; color: {{var text}} ;"><div style="max-height: 85px; overflow: hidden; font-size: 11px" >{{var message}}</div></td></tr></table></div>
+                                    </div>
+                                    <div style="width: 340px;height: 21px;margin-top:8px">
+                                        <span style="width: 55px; float: left; height: 21px; color: {{var text}}">valor</span>
+                                        <span style="width: 285px; float: right; text-align: right">
+                                            <label style="color: {{var text}}">N&uacute;mero de la tarjeta:</label>
+                                            {{if barcode}}
+                                            <span style="color: {{var style}}; font-weight: bold">{{var code}}</span>
+                                            {{/if}}
+                                        </span>
+                                    </div>
+                                    <div style="width: 340px;height: 70px">
+                                        <span style="width: 130px; height: 50px; line-height: 40px; float: left; font-size: 25px; color: {{var style}}; font-weight: bold; font-family: time new roman">{{var balance}}</span>
+                                        <span style="width: 210px; height: 50px; float: left; text-align: right">
+                                            {{if barcode}}
+                                            <img src="{{var barcode}}" {{var resize}} style="float:right"/>
+                                            {{else}}
+                                            <span style="line-height: 45px; font-size: 20px; color: {{var style}}; font-weight: bold; font-family: time new roman">{{var code}}</span>
+                                            {{/if}}
+                                        </span>
+                                    </div>
+                                    <div style="width: 340px;height: 65px; overflow: hidden;display:table-cell; vertical-align: bottom">
+                                        <p style="font-size: 11px;line-height: 16px; margin: 0; color: {{var text}}">{{var note}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {{/depend}}
+                            </p>
+                            <p>
+                            	Si te surge alguna duda sobre el uso de la GIFT CARD, no dudes en enviarnos un mail a <a href="mailto:{{config path='trans_email/ident_support/email'}}" style="color:#1E7EC8;">{{config path='trans_email/ident_support/email'}}</a> o llamanos al {{config path='general/store_information/phone'}}.</br>
+                            	Esperamos disfrutes este regalo!
+                            </p>
+                            <p>
+                        	    Saludos,</br>
+								El equipo de Mitrenda.com
+							</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>

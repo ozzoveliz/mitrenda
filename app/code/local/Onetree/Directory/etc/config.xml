@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Onetree_Directory>
+            <version>0.1.0</version>
+        </Onetree_Directory>
+    </modules>
+    <global>
+        <models>
+            <onetree_directory>
+                <class>Onetree_Directory_Model</class>
+                <resourceModel>onetree_directory_resource</resourceModel>
+            </onetree_directory>
+            <onetree_directory_resource>
+                <class>Onetree_Directory_Model_Resource</class>
+            </onetree_directory_resource>
+            <directory>
+                <rewrite>
+                    <currency>Onetree_Directory_Model_Currency</currency>
+                </rewrite>
+            </directory>
+        </models>
+        <blocks>
+            <onetree_directory>
+                <class>Onetree_Directory_Block</class>
+            </onetree_directory>
+        </blocks>
+        <helpers>
+            <onetree_directory>
+                <class>Onetree_Directory_Helper</class>
+            </onetree_directory>
+        </helpers>
+    </global>
+</config>

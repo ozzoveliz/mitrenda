@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Onetree_Sales>
+            <version>0.1.0</version>
+        </Onetree_Sales>
+    </modules>
+    <global>
+        <models>
+            <onetree_sales>
+                <class>Onetree_Sales_Model</class>
+                <resourceModel>onetree_sales_resource</resourceModel>
+            </onetree_sales>
+            <onetree_sales_resource>
+                <class>Onetree_Sales_Model_Resource</class>
+            </onetree_sales_resource>
+        </models>
+        <blocks>
+            <onetree_sales>
+                <class>Onetree_Sales_Block</class>
+            </onetree_sales>
+            <adminhtml>
+                <rewrite>
+                    <sales_order_grid>Onetree_Sales_Block_Adminhtml_Sales_Order_Grid</sales_order_grid>
+                    <sales_invoice_grid>Onetree_Sales_Block_Adminhtml_Sales_Invoice_Grid</sales_invoice_grid>
+                    <sales_creditmemo_grid>Onetree_Sales_Block_Adminhtml_Sales_Creditmemo_Grid</sales_creditmemo_grid>
+                </rewrite>
+            </adminhtml>
+        </blocks>
+        <helpers>
+            <onetree_sales>
+                <class>Onetree_Sales_Helper</class>
+            </onetree_sales>
+        </helpers>
+        <resources>
+            <onetree_sales_setup>
+                <setup>
+                    <module>Onetree_Sales</module>
+                </setup>
+            </onetree_sales_setup>
+        </resources>
+    </global>
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <onetree_sales before="Mage_Adminhtml">Onetree_Sales_Adminhtml</onetree_sales>
+                        <onetree_sales before="Mage_Adminhtml">Onetree_Sales_Adminhtml</onetree_sales>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+</config>

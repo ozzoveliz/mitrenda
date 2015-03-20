@@ -1,0 +1,170 @@
+
+<?php
+      $_current_category = Mage::registry('current_category');
+
+       $categories = Mage::getModel('catalog/category')
+                         ->getCollection()
+                         // magic is prepared here..
+                         ->addAttributeToSelect('*')
+                         // then the magic happens here:
+                         ->addAttributeToFilter('parent_id', array( $_current_category->getId()))
+                         ->addAttributeToFilter('is_active', 1)
+                         ->addAttributeToSort('position', 'asc')
+                          /*->addAttributeToFilter('level', array('eq'=>2))*/
+                         ->load();
+       
+        $_collectionSize = $categories->count();
+  ?>
+
+
+<!-- LOOKBOOK STATIC MOCKUP STARTS =============================================================================================================================== -->
+				<!-- Lookbook -->
+                
+              <?php if($_current_category->getLevel()==2):?>  
+				<div class="lookbook-wrapper">
+					<ul id="lookbook-main-categories">
+                         <?php foreach($categories as $category):?>
+						<li>
+                            <a href="<?php echo $category->getUrl() ?>">
+                                
+                                <?php $imge_url= $category->getThumbnail();?>
+                                  
+                                <?php if(!empty($imge_url)):?>
+                                    <img src="<?php echo Mage::getBaseUrl('media') . 'catalog' . DS . 'category' . DS . $category->getThumbnail() ?>" alt="<?php echo $this->htmlEscape($category->getName()) ?>" alt="Lookbook Example" width="240"/>
+                                <?php else:?>
+                                    <img  src="<?php echo $this->getSkinUrl('images/lookbook-example.jpg'); ?>" width="240"/>
+                                <?php endif;?>
+                                <span class="box-category-title"><?php echo $category->getName() ?></span>
+                            </a>
+                        </li>
+                        <?php endforeach; ?>
+					</ul>
+					<div class="clear"></div>
+				</div>
+                <?php else: ?>
+                
+				<!--end-->	
+			
+				<!-- Lookbook single category -->
+				<div class="lookbook-wrapper box-title">
+					<div class="page-title category-title">
+	    				<h1 class="lookbook-category-title"><span><span><?php echo $_current_category->getName() ?></span></span></h1>
+					</div>
+					<div class="mobile-subcategory-select-box">
+						<form action="#">
+                            <p>
+                                <select id="lookbook-subcategory-select">
+                                     <?php foreach($categories as $category):?>
+                                          <option value="<?php echo  $category->getId();?>"><?php echo $category->getName();?></option>               
+                                     <?php endforeach; ?>
+                                    </select>
+                            </p></form>
+					</div>
+                    <?php if($_collectionSize >0):?>
+                     
+                        <ul id="" class="bxslider">
+                            <?php foreach($categories as $category):?>
+                             <li>
+                                 <a id="category-<?php echo  $category->getId();?>" class="link-slider" href="<?php echo $category->getUrl() ?>">
+                                    <?php $imge_url= $category->getThumbnail();?>
+                                    <?php if(!empty($imge_url)):?>
+                                     <img src="<?php echo Mage::getBaseUrl('media') . 'catalog' . DS . 'category' . DS . $category->getThumbnail() ?>" alt="<?php echo $this->htmlEscape($category->getName()) ?>" alt="Lookbook Example" />
+                                    <?php else:?>
+                                     <img  src="<?php echo $this->getSkinUrl('images/lookbook-example.jpg'); ?>" >
+<!--                                     width="243" height="394"-->
+                                    <?php endif;?>
+                                        <span class="span-title"><?php echo $category->getName() ?></span>
+                                 </a>
+                             </li>
+                            <?php endforeach; ?>
+
+                        </ul>
+                    <?php endif;?>
+                    <?php //Add by dav.q carroussel?>
+                    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+                    <script src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS);?>jquery.bxslider/jquery.bxslider.min.js"></script>
+                    <link href="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS);?>jquery.bxslider/jquery.bxslider.css" rel="stylesheet" />
+                    <?php // End carrosel ?>
+
+                    <script>jQuery.noConflict();
+                        jQuery(function($){
+                             $('.bxslider').bxSlider({ auto: true,
+                               minSlides: 2,
+                                maxSlides: 4,
+                                slideWidth: 240,
+                                pager: false,
+                                slideMargin: 0
+                              });
+                           /*$('.bxslider').bxSlider({
+                                slideWidth:250,
+                                minSlides: 1,
+                                maxSlides: 4,
+                                slideMargin: 5,
+                                pager: false,
+                                responsive: true
+                                
+                           });*/
+
+                           $('.bxslider li a').click(function(e){
+                                e.preventDefault();
+                                var id = this.id.split('-')[1];
+                                $.ajax({
+                                url: "<?php echo $this->getUrl('catalog/category/lookbookAjax') ?>",
+                                type: "POST",
+                                data: "id="+id,
+                                beforeSend:function(){
+                                   $('.box-loadin').css('display','block');
+                                },
+                                success: function(data) {
+                                    $('.lookbook-selected-subcategory .box-product-category').html(data);
+                                },
+                                complete: function(){
+                                    $('.box-loadin').css('display','none');
+                                }
+                            });  
+                           });
+                           
+                           $('#lookbook-subcategory-select').on('change', function() {
+                                var id = this.value;
+                                $.ajax({
+                                    url: "<?php echo $this->getUrl('catalog/category/lookbookAjax') ?>",
+                                    type: "POST",
+                                    data: "id="+id,
+                                    beforeSend:function(){
+                                       $('.box-loadin').css('display','block');
+                                    },
+                                    success: function(data) {
+                                        $('.lookbook-selected-subcategory .box-product-category').html(data);
+                                    },
+                                    complete: function(){
+                                        $('.box-loadin').css('display','none');
+                                    }
+                                });
+                                
+                              });
+                              
+                              $( ".bxslider li a" ).first().trigger( "click" );
+                           
+                        });
+                    </script>
+                    
+                    
+                    
+					<div class="clear"></div>
+					<a href="#" class="lookbook-subcategories-slider-btn lookbook-subcategories-slider-prev">Prev</a>
+					<a href="#" class="lookbook-subcategories-slider-btn lookbook-subcategories-slider-next">Next</a>
+					<div class="lookbook-selected-subcategory">
+                        <div class="box-loadin" style="display:none">
+                            <img  src="<?php echo $this->getSkinUrl('images/loadingGif.gif'); ?>" width="50"/>
+                        </div>
+                        
+                        <div class="box-product-category"></div>
+						
+					</div>
+					<div class="clear"></div>
+				</div>
+                
+                <?php endif; ?>
+				<!--end-->	
+			<!-- ================================================================================================================================================================ -->
+

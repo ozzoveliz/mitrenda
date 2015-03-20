@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<config>
+    <tabs>
+        <billofsale translate="label" module="billofsalenumber">
+            <label>Bill of Sale</label>
+            <sort_order>150</sort_order>
+        </billofsale>
+    </tabs>  
+    <sections>
+        <billofsale translate="label" module="billofsalenumber">
+            <label>Number Options</label>
+            <tab>billofsale</tab>
+            <sort_order>1000</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <groups>
+                <billofsalenumber_group translate="label" module="billofsalenumber">
+                    <label>Bill of Sale Number Options</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>1000</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <fields>
+                        <billofsalenumber_input translate="label">
+                            <validate>required-entry validate-length maximum-length-7 minimum-length-7</validate>
+                            <label>Current Bill of Sale Number:</label>
+                            <comment>Must be a number with 7 digits.</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                        </billofsalenumber_input>
+
+                        <customer_type translate="label,comment">
+                            <label>Customer Type</label>
+                            <comment>Customer Type, YES to apply financial law or NO to no Final customer type</comment>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                        </customer_type>
+                    </fields>
+                </billofsalenumber_group>
+            </groups>
+        </billofsale>
+    </sections>  
+</config>

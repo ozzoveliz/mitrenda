@@ -1,0 +1,14 @@
+app/etc/local.xml
+/cache/
+/package/
+/session/
+media/catalog/
+media/customer/
+media/dhl/
+media/downloadable/
+media/tmp/
+media/colorswatch/
+media/wysiwyg/
+media/xmlconnect/
+var/
+var/resource_config.json

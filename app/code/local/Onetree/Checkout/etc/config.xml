@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Onetree_Checkout>
+            <version>0.1.0</version>
+        </Onetree_Checkout>
+    </modules>
+    <global>
+        <models>
+            <onetree_checkout>
+                <class>Onetree_Checkout_Model</class>
+                <resourceModel>onetree_checkout_resource</resourceModel>
+            </onetree_checkout>
+            <onetree_checkout_resource>
+                <class>Onetree_Checkout_Model_Resource</class>
+            </onetree_checkout_resource>
+        </models>
+        <blocks>
+            <onetree_checkout>
+                <class>Onetree_Checkout_Block</class>
+            </onetree_checkout>
+            <checkout>
+                <rewrite>
+                    <onepage_success>Onetree_Checkout_Block_Checkout_Onepage_Success</onepage_success>
+                </rewrite>
+            </checkout>
+        </blocks>
+        <helpers>
+            <onetree_checkout>
+                <class>Onetree_Checkout_Helper</class>
+            </onetree_checkout>
+        </helpers>
+    </global>
+</config>

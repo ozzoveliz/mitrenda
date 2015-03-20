@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Onetree_Cart>
+            <version>0.1.0</version>
+        </Onetree_Cart>
+    </modules>
+    <frontend>
+        <events>
+            <checkout_cart_add_product_complete>
+                <observers>
+                    <onetree_cartbypass_observer>
+                        <type>singleton</type>
+                        <class>Onetree_Cart_Model_Observer</class>
+                        <method>afterAddToCart</method>
+                    </onetree_cartbypass_observer>
+                </observers>
+            </checkout_cart_add_product_complete>
+        </events>
+    </frontend>
+</config>

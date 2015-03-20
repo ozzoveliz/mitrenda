@@ -1,0 +1,410 @@
+<?php
+$order = $this->getOrder();
+$items = $order->getAllItems();
+
+//$dealHelp = Mage::getBlockSingleton('dailydeals/deal');
+
+if ($items) {
+
+    $product = $items[0]->getProduct();
+}
+
+//$dealHelp->setProduct($product);
+$image = $product->getMediaGalleryImages()->getFirstItem();
+
+//Mage::app()->getLayout()->getMessagesBlock()->setMessages(Mage::getSingleton('customer/session')->getMessages(true));
+$session            = Mage::getSingleton('checkout/session');
+$customer           = Mage::getSingleton('customer/session')->getCustomer();
+$payment            = $order->getPayment()->getMethod();
+$quantity           = $order->getData('total_qty_ordered');
+//$discount           = $dealHelp->getDealSavingAmount() * $quantity;
+$customerFirstname  = $customer->getFirstname();
+$customerLastname   = $customer->getLastname();
+$customerEmail 		= $customer->getEmail();
+$productName        = $product->getDealName();
+$productPrice       = Mage::helper('core')->currency($product->getFinalPrice(), true, true);
+//$productDiscount    = Mage::helper('core')->currency($discount, true, true);
+$grandTotal         = Mage::helper('core')->currency($this->getOrder()->getData('grand_total'), true, true);
+
+?>
+
+<?php if ($payment != 'abitab'): ?>
+    <div class="page-title">
+        <h1><?php echo $this->__('Your order has been received.') ?></h1>
+    </div>
+    <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+    <h2 class="sub-title"><?php echo $this->__('Thank you for your purchase!') ?></h2>
+
+    <?php if ($this->getOrderId()):?>
+        <?php if ($this->getCanViewOrder()) :?>
+            <p><?php echo $this->__('Your order # is: %s.', sprintf('<a href="%s">%s</a>', $this->escapeHtml($this->getViewOrderUrl()), $this->escapeHtml($this->getOrderId()))) ?></p>
+        <?php  else :?>
+            <p><?php echo $this->__('Your order # is: %s.', $this->escapeHtml($this->getOrderId())) ?></p>
+        <?php endif;?>
+        <p><?php echo $this->__('You will receive an order confirmation email with details of your order and a link to track its progress.') ?></p>
+        <?php if ($this->getCanViewOrder() && $this->getCanPrintOrder()) :?>
+            <p>
+                <?php echo $this->__('Click <a href="%s" onclick="this.target=\'_blank\'">here to print</a> a copy of your order confirmation.', $this->getPrintUrl()) ?>
+                <?php echo $this->getChildHtml() ?>
+            </p>
+        <?php endif;?>
+    <?php endif;?>
+
+    <?php if ($this->getAgreementRefId()): ?>
+        <p><?php echo $this->__('Your billing agreement # is: %s.', sprintf('<a href="%s">%s</a>', $this->escapeHtml($this->getAgreementUrl()), $this->escapeHtml($this->getAgreementRefId())))?></p>
+    <?php endif;?>
+
+    <?php if ($profiles = $this->getRecurringProfiles()):?>
+        <p><?php echo $this->__('Your recurring payment profiles:'); ?></p>
+        <ul class="disc">
+            <?php foreach($profiles as $profile):?>
+                <?php $profileIdHtml = ($this->getCanViewProfiles() ? sprintf('<a href="%s">%s</a>', $this->escapeHtml($this->getProfileUrl($profile)), $this->escapeHtml($this->getObjectData($profile, 'reference_id'))) : $this->escapeHtml($this->getObjectData($profile, 'reference_id')));?>
+                <li><?php echo $this->__('Payment profile # %s: "%s".', $profileIdHtml, $this->escapeHtml($this->getObjectData($profile, 'schedule_description')))?></li>
+            <?php endforeach;?>
+        </ul>
+    <?php endif;?>
+
+    <div class="buttons-set">
+        <button type="button" class="button" title="<?php echo $this->__('Continue Shopping') ?>" onclick="window.location='<?php echo $this->getUrl() ?>'"><span><span><?php echo $this->__('Continue Shopping') ?></span></span></button>
+    </div>
+
+
+    <script type="text/javascript">
+        jQuery(document).ready(function(){
+            <?php if ($payment == 'visanet'): ?>
+            _gaq.push(['_trackPageview', '/compraVisa.html']);
+            <?php elseif($payment == 'firstdata'): ?>
+            _gaq.push(['_trackPageview', '/compraMaster.html']);
+            <?php elseif($payment == 'ocauru'): ?>
+            _gaq.push(['_trackPageview', '/compraOca.html']);
+            <?php elseif($payment == 'redpagos'): ?>
+            _gaq.push(['_trackPageview', '/compraRedPagos.html']);
+            <?php endif; ?>
+
+        });
+    </script>
+<?php endif; ?>
+
+<?php
+if ($payment == 'abitab'):
+//    $abitabTipodoc		= $product->getAttributeText('abitab_tipodoc'); // neurona /*attribute added to Abitab works*/
+    require_once(BP . DS . 'lib' . DS . 'barcode' . DS . 'barcode.php');
+    $order = $this->getOrder();
+
+    $zeroStr    = '0000000';
+    $customerId = $customer->getId();
+
+    $len    = strlen($customerId);
+    $rest   = substr($zeroStr, 0, -($len));    // returns "f"
+
+    $customerStr    = $rest . $customerId;
+    $zeroStr        = '0000000';
+    $orderNr        = $order->getIncrementId();
+
+    if (strlen($orderNr) < 7) {
+
+        $len = strlen($orderNr);
+        $rest = substr($zeroStr, 0, -($len));
+        $orderStr = $rest . $orderNr;
+
+    } elseif (strlen($orderNr) > 7) {
+        $orderStr = substr($orderNr, -7);
+
+    } else {
+        $orderStr = $orderNr;
+    }
+    $amount = $order->getGrandTotal();
+    $amount = $amount * 100;
+
+    $zeroStr = '00000000000';
+    if (strlen($amount) < 11) {
+
+        $len = strlen($amount);
+        $rest = substr($zeroStr, 0, -($len));
+        $amountStr = $rest . $amount;
+
+    } elseif (strlen($amount) > 11) {
+        $amountStr = substr($amount, 0, -8);
+
+    } else {
+        $amountStr = $amount;
+    }
+
+
+    $today = date("dmY", mktime(0, 0, 0, date("m"), date("d"), date("Y")));
+
+    //comments came from customer
+    $checkSum   = 0;
+    $expireDate = date("dmY", mktime(0, 0, 0, date("m"), date("d") + 2, date("Y"))); /* always 2 days since the current timestamp in wich this ticket is made [ddmmaaa] , 8 digits long */
+    $comerceId  = 'MTD';
+    /* string[3] , always will be NTP */
+    $userId     = $customerStr;  /* the user Id in magento, this should be seven digit long. Complete with ceros at the left if the number is lower */
+    $orderId    = $orderStr;
+    /* the user Id in magento, this should be seven digit long. Complete with ceros at the left if the number is lower. I saw in magento that order are 8 digits long.
+      The first two digits are 38 (always for Argentina sales). Perhaps is  the Argentina identifier. In order to fit in the code, we can use the order Id without that digit (38) */
+
+    $amount     = $amountStr;
+    $currency   = '1';  /* 1 means uruguay currency, this value will be always 1 */
+//    if($abitabTipodoc == "Boleto")
+//        $type       = '7';
+//    else
+    $type       = '1';
+    $checkChar  = '*'; /* This will be in each side of the bar code */
+    $wArray     = array(2, 9, 8, 7, 6, 3, 4, 4, 5, 6, 3, 2, 7, 3, 2, 9, 8, 7, 6, 3, 4, 4, 5, 6, 3, 2, 7, 3, 2, 9, 8, 7, 6, 3, 4);
+
+
+    /* ____________________________________________Check digit Calculation______________________________________________________ */
+
+    $toCheck = (string) $userId . (string) $orderId . $expireDate . (string) $amount . $currency . $type;  /* cast to string the integer types */
+    for ($i = 0; $i < 35; $i++) {
+        $checkSum += ( (int) $toCheck[$i] * (int) $wArray[$i]) % 10;
+    }
+
+    $checkDigit = 10 - ($checkSum % 10);
+
+    if ($checkDigit == 10)
+        $checkDigit = 0;
+
+    /* ____________________________________________End Check digit Calculation______________________________________________________ */
+
+    //$firstCode   = $checkChar.$comerceId.(string)$userId.(string)$orderId.$expireDate.$checkChar;
+    //$secondCode = $checkChar.(string)$amount.$currency.$type.(string)$checkDigit.$checkChar;
+    //header('Content-Type: image/png');
+    $firstCode = $comerceId . (string) $userId . (string) $orderId . $expireDate;
+    $secondCode = (string) $amount . $currency . $type . (string) $checkDigit;
+
+    ob_start();
+    $firstCodeFilename = md5($firstCode) . '.png';
+
+    Barcode39($firstCode, 870, 80, 100, "PNG", 1);
+    file_put_contents(BP . DS . 'media/images' . DS . $firstCodeFilename, ob_get_clean());
+
+    ob_start();
+    $secondCodeFilename = md5($secondCode) . '.png';
+    Barcode39($secondCode, 780, 80, 100, "PNG", 1);
+    file_put_contents(BP . DS . 'media/images' . DS . $secondCodeFilename, ob_get_clean());
+    ?>
+<div id="abitabcont">
+    <div id="abitabcont_send">
+    <div class="page-title">
+        <h1><?php echo $this->__('Your order has been received.') ?></h1>
+    </div>
+    <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+    <h2 class="sub-title"><?php echo $this->__('Thank you for your purchase!') ?></h2>
+
+    <?php if ($this->getOrderId()):?>
+        <?php if ($this->getCanViewOrder()) :?>
+            <p><?php echo $this->__('Your order # is: %s.', sprintf('<a href="%s">%s</a>', $this->escapeHtml($this->getViewOrderUrl()), $this->escapeHtml($this->getOrderId()))) ?></p>
+        <?php  else :?>
+            <p><?php echo $this->__('Your order # is: %s.', $this->escapeHtml($this->getOrderId())) ?></p>
+        <?php endif;?>
+        <p><?php echo 'Recibir&aacute; un correo electr&oacute;nico de confirmaci&oacute;n de su Pedido.'; ?></p>
+        <?php if ($this->getCanViewOrder() && $this->getCanPrintOrder()) :?>
+            <p>
+                <?php echo $this->__('Click <a href="%s" onclick="this.target=\'_blank\'">here to print</a> a copy of your order confirmation.', $this->getPrintUrl()) ?>
+                <?php echo $this->getChildHtml() ?>
+            </p>
+        <?php endif;?>
+    <?php endif;?>
+
+    <p style="margin-bottom: 15px;">&iexcl;Felicitaciones por tu compra a trav&eacute;s de <a  href="http://www.abitab.com.uy" target="_blank" style="margin-top:-15px; position:relative; top:11px; border:none;"> <img style="border:none;vertical-align:initial;" src="<?php echo $this->getSkinUrl('images/abitab.png') ?>"></a></p>
+    <p style="margin-bottom: 30px;">1) Clickea en "imprimir" para  ver e imprimir el c&oacute;digo de barras que te permitir&aacute; efectuar el pago de la oferta. <br />
+        2) Realiza el pago en efectivo dirigi&eacute;ndote con este comprobante a cualquier sucursal de Abitab dentro de las pr&oacute;ximas 48 hs (luego de ese tiempo queda anulada su validez). <br />
+        3) Una vez realizado el pago, recibir&aacute;s por mail el cup&oacute;n que te permitir&aacute; disfrutar la oferta.</p>
+    <?php
+        echo '<img src="'.Mage::getBaseUrl().'media/images/' . $firstCodeFilename . '" style="width:655px; margin-bottom: 20px;" /> <br>';
+        echo '<img src="'.Mage::getBaseUrl().'media/images/' . $secondCodeFilename . '"  style="width:655px;" /> ';
+    ?><br />
+
+    <script type="text/javascript">
+        function printwindow(){
+            setTimeout("window.print()", 1000);
+        }
+    </script>
+    <script type="text/javascript">
+
+        jQuery(document).ready(function(){
+            _gaq.push(['_trackPageview', '/compraAbitab.html']);
+        });
+
+        function printPopup(){
+            ReadCnt = '<html><head></head><body onload="printwindow()">' + document.getElementById("abitabcont_send").innerHTML + '</bod></html>';
+            popup = open("","popup"," menubar=yes, toolbar=yes, status=yes, scrollbars=yes,resizable=yes");
+            popup.document.open();
+            popup.document.write(ReadCnt);
+            popup.document.close();
+            window.popup.focus();
+        }
+
+    </script>
+    </div>
+    <div class="buttons-set">
+        <button type="button" class="button" title="<?php echo $this->__('Continue Shopping') ?>" onclick="window.location='<?php echo $this->getUrl() ?>'"><span><span><?php echo $this->__('Continue Shopping') ?></span></span></button>
+    </div>
+    <div class="print-box">
+        <a class="print" id="print" style="cursor:pointer;" onclick="printPopup();"><?php echo $this->__('Imprimir'); ?></a>
+    </div>
+    <?php /*
+    <h3>aaaaaaaaaaaaaaaaaaaaa&#161;Felicitaciones por tu compra a trav&eacute;s de </h3>
+    <p><a href="http://www.abitab.com.uy" target="_blank" style="margin-top:-15px; position:relative; top:11px; border:none;"><img style="border:none;" src="<?php echo $this->getSkinUrl('images/abitab.png') ?>"></a></p>
+    <p>1) Clickea en "imprimir" para  ver e imprimir el c&oacute;digo de barras que te permitir&aacute; efectuar el pago de la oferta.  </p>
+    <p>2) Realiza el pago en efectivo dirigi&eacute;ndote con este comprobante a cualquier sucursal de Abitab dentro de las pr&oacute;ximas 48 hs (luego de ese tiempo queda anulada su validez).  </p>
+    <p>3) Una vez realizado el pago, recibir&aacute;s por mail el cup&oacute;n que te permitir&aacute; disfrutar la oferta.</p>
+    <h1><a class="print" style="cursor:pointer;" onclick="printPopup();"><?php echo $this->__('Imprimir') ?></a></h1>*/ ?>
+
+    <?php
+    // Envia c&oacute;digo de barras por mail
+
+    $to = $customerEmail;
+    $subject = "Nueva Orden Mitrenda";
+    ob_start(); ?>
+
+    <body style="background:#F6F6F6; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:12px; margin:0; padding:0;">
+        <div style="background:#F6F6F6; font-family:Verdana, Arial, Helvetica, sans-serif; font-size:12px; margin:0; padding:0;">
+            <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                <tr>
+                    <td align="center" valign="top" style="padding:20px 0 20px 0">
+                        <table bgcolor="#FFFFFF" cellspacing="0" cellpadding="10" border="0" width="650" style="border:1px solid #E0E0E0;">
+                            <!-- [ header starts here] -->
+                            <tr>
+                                <td valign="top"><a href="<?php echo $this->getBaseUrl(); ?>"><img src="<?php echo $this->getSkinUrl('images/logo.png') ?>" alt="Mitrenda" style="margin-bottom:10px;" border="0"/></a></td>
+                            </tr>
+                            <!-- [ middle starts here] -->
+                            <tr>
+                                <td valign="top">
+                                    <h1 style="font-size:22px; font-weight:normal; line-height:22px; margin:0 0 11px 0;"">Hola, <?php echo $order->getCustomerName(); ?></h1>
+                                    <p style="font-size:12px; line-height:16px; margin:0;">
+                                        Gracias por realizar tu pedido con ABITAB.
+                                        Si tienes alguna pregunta sobre tu pedido, por favor env&iacute;anos un mail a <a href="mailto:<?php echo Mage::getStoreConfig('trans_email/ident_support/email') ?>" style="color:#1E7EC8;"><?php echo Mage::getStoreConfig('trans_email/ident_support/email') ?></a> o ll&aacute;manos al <span class="nobr"><?php echo Mage::getStoreConfig('general/store_information/phone') ?></span> de lunes a viernes, 10:00 a 17:00 horas.
+                                    </p>
+                                    <h3>Informaci&oacute;n del Pedido</h3>
+
+                                    <p style="font-size:12px; line-height:16px; margin:0;">
+                                    <div class="secondbox" style="width:640px; height:295px; ">
+                                        <p>&iexcl;Felicitaciones por tu compra a trav&eacute;s de <a  href="http://www.abitab.com.uy" target="_blank" style="margin-top:-15px; position:relative; top:11px; border:none;"><img style="border:none;" src="<?php echo $this->getSkinUrl('images/abitab.png') ?>"></a></p>
+                                        <p>Te recordamos que esta es tu orden de pago. Deber&aacute;s presentar este tal&oacute;n impreso y pagar en cualquiera de los locales Abitab de todo el pa&iacute;s dentro de las proximas 48hs.</p>
+                                        <p style="margin-bottom: 30px;">
+                                        <ul>
+                                            <li>Para completar tu compra imprime este correo cuidando que se imprima el c&oacute;digo de barras.</li>
+                                            <li>Para esto puede que tengas que habilitar la visualizaci&oacute;n de im&aacute;genes en tu cliente de correo.</li>
+                                            <li>Al dia siguiente de efectuado el pago recibir&aacute;s tu cup&oacute;n via mail - tambi&eacute;n podr&aacute;s descargarlos desde la web accediendo con tu usuario.</li>
+                                        </ul>
+                                        </p>
+                                        <?php
+                                        echo '<img src="'.Mage::getBaseUrl().'media/images/' . $firstCodeFilename . '" style="width:655px; margin-bottom: 20px;" /> ';
+                                        echo '<img src="'.Mage::getBaseUrl().'media/images/' . $secondCodeFilename . '"  style="width:655px;" /> ';
+                                        ?><br />
+                                    </div>
+                                    </p>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h2 style="font-size:18px; font-weight:normal; margin:0;">Tu pedido #<?php echo $order->getIncrementId(); ?> <small>(placed on <?php echo $order->getCreatedAtFormated('long'); ?>)</small></h2>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table cellspacing="0" cellpadding="0" border="0" width="650">
+                                        <thead>
+                                        <tr>
+                                            <th align="left" width="325" bgcolor="#EAEAEA" style="font-size:13px; padding:5px 9px 6px 9px; line-height:1em;">Informaci&oacute;n de Facturaci&oacute;n:</th>
+                                            <th width="10"></th>
+                                            <th align="left" width="325" bgcolor="#EAEAEA" style="font-size:13px; padding:5px 9px 6px 9px; line-height:1em;">Medio de Pago:</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td valign="top" style="font-size:12px; padding:7px 9px 9px 9px; border-left:1px solid #EAEAEA; border-bottom:1px solid #EAEAEA; border-right:1px solid #EAEAEA;">
+                                                <?php echo $order->getBillingAddress()->format('html'); ?>
+                                            </td>
+                                            <td>&nbsp;</td>
+                                            <td valign="top" style="font-size:12px; padding:7px 9px 9px 9px; border-left:1px solid #EAEAEA; border-bottom:1px solid #EAEAEA; border-right:1px solid #EAEAEA;">
+                                                <?php
+                                                try {
+                                                    // Retrieve specified view block from appropriate design package (depends on emulated store)
+                                                    $paymentBlock = Mage::helper('payment')->getInfoBlock($order->getPayment())
+                                                        ->setIsSecureMode(true);
+                                                    $storeId = $order->getStore()->getId();
+                                                    $paymentBlock->getMethod()->setStore($storeId);
+                                                    echo $paymentBlock->toHtml();
+                                                } catch (Exception $exception) {
+                                                    echo "";
+                                                }
+                                                ?>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <br/>
+                                    <table cellspacing="0" cellpadding="0" border="0" width="650">
+                                        <thead>
+                                        <tr>
+                                            <th align="left" width="325" bgcolor="#EAEAEA" style="font-size:13px; padding:5px 9px 6px 9px; line-height:1em;">Informaci&oacute;n de Env&iacute;o:</th>
+                                            <th width="10"></th>
+                                            <th align="left" width="325" bgcolor="#EAEAEA" style="font-size:13px; padding:5px 9px 6px 9px; line-height:1em;">Costo de Env&iacute;o:</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td valign="top" style="font-size:12px; padding:7px 9px 9px 9px; border-left:1px solid #EAEAEA; border-bottom:1px solid #EAEAEA; border-right:1px solid #EAEAEA;">
+                                                <?php echo $order->getShippingAddress()->format('html'); ?>
+                                                &nbsp;
+                                            </td>
+                                            <td>&nbsp;</td>
+                                            <td valign="top" style="font-size:12px; padding:7px 9px 9px 9px; border-left:1px solid #EAEAEA; border-bottom:1px solid #EAEAEA; border-right:1px solid #EAEAEA;">
+                                                <?php echo $order->getShippingDescription(); ?>
+                                                &nbsp;
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <br/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td bgcolor="#EAEAEA" align="center" style="background:#EAEAEA; text-align:center;"><center><p style="font-size:12px; margin:0;">Muchas gracias, <strong>Mitrenda</strong></p></center></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+    </body>
+</div>
+
+
+    <?php $message = ob_get_clean();
+
+    $headers = 'From: MiTrenda - Ventas <contacto@mitrenda.com>' . "\r\n";
+    $headers .= 'Reply-To: contacto@mitrenda.com' . "\r\n";
+    $headers .= 'MIME-Version: 1.0' . "\n";
+    $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+    mail($to,$subject,$message,$headers,'-f contacto@mitrenda.com');
+//	mail($to,$subject,$message,$headers);
+    ?>
+</div>
+<?php endif; ?>
+<div class="clear"></div>
+
+<?php echo $this->getChild('more-deals');?>
+
+<!-- Google Code for Compra Online Conversion Page -->
+<script type="text/javascript">
+    /* <![CDATA[ */
+    var google_conversion_id = 999370084;
+    var google_conversion_language = "en";
+    var google_conversion_format = "2";
+    var google_conversion_color = "ffffff";
+    var google_conversion_label = "EziTCPyuuQMQ5NrE3AM";
+    var google_conversion_value = 0;
+    /* ]]> */
+</script>
+<script type="text/javascript" src="https://www.googleadservices.com/pagead/conversion.js">
+</script>
+<noscript>
+    <div style="display:inline;">
+        <img height="1" width="1" style="border-style:none;" alt="" src="https://www.googleadservices.com/pagead/conversion/999370084/?value=0&amp;label=EziTCPyuuQMQ5NrE3AM&amp;guid=ON&amp;script=0"/>
+    </div>
+</noscript>
+
+
+

@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Onetree_Catalog>
+            <version>0.1.0</version>
+        </Onetree_Catalog>
+    </modules>
+    <global>
+        <models>
+            <onetree_catalog>
+                <class>Onetree_Catalog_Model</class>
+                <resourceModel>onetree_catalog_resource</resourceModel>
+            </onetree_catalog>
+        </models>
+        <blocks>
+            <onetree_catalog>
+                <class>Onetree_Catalog_Block</class>
+            </onetree_catalog>
+        </blocks>
+        <helpers>
+            <onetree_catalog>
+                <class>Onetree_Catalog_Helper</class>
+            </onetree_catalog>
+        </helpers>
+        <resources>
+            <onetree_catalog_setup>
+                <setup>
+                    <module>Onetree_Catalog</module>
+                </setup>
+            </onetree_catalog_setup>
+        </resources>
+    </global>
+    
+    
+    <frontend>
+        <routers>
+          <catalog>
+            <args>
+              <modules>
+                  <onetree_catalog before="Mage_Catalog">Onetree_Catalog</onetree_catalog>
+              </modules>
+            </args>
+          </catalog>
+        </routers>
+  </frontend>
+    
+    
+    
+</config>

@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Onetree_Sociallogin>
+            <version>0.1.0</version>
+        </Onetree_Sociallogin>
+    </modules>
+    <global>
+        <models>
+            <onetree_sociallogin>
+                <class>Onetree_Sociallogin_Model</class>
+                <resourceModel>onetree_sociallogin_resource</resourceModel>
+            </onetree_sociallogin>
+            <onetree_sociallogin_resource>
+                <class>Onetree_Sociallogin_Model_Resource</class>
+            </onetree_sociallogin_resource>
+        </models>
+        <blocks>
+            <onetree_sociallogin>
+                <class>Onetree_Sociallogin_Block</class>
+            </onetree_sociallogin>
+            <sociallogin>
+                <rewrite>
+                    <toplinks>Onetree_Sociallogin_Block_Toplinks</toplinks>
+                </rewrite>
+            </sociallogin>
+        </blocks>
+        <helpers>
+            <onetree_sociallogin>
+                <class>Onetree_Sociallogin_Helper</class>
+            </onetree_sociallogin>
+        </helpers>
+    </global>
+    <frontend>
+        <routers>
+            <sociallogin>
+                <args>
+                    <modules>
+                        <onetree_sociallogin before="Magestore_Sociallogin">Onetree_Sociallogin</onetree_sociallogin>
+                    </modules>
+                </args>
+            </sociallogin>
+        </routers>
+    </frontend>
+</config>

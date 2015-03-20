@@ -1,0 +1,78 @@
+                    
+<?php
+    $_helper = $this->helper('catalog/output');
+     $_current_category = Mage::registry('current_category');
+     $_productCollection=$this->getLoadedProductCollection();
+     $_collectionSize = $_productCollection->count();
+    
+     $theme = $this->helper('ultimo');
+     $helpLabels = $this->helper('ultimo/labels');
+     $helpTemplate = $this->helper('ultimo/template');
+     $helpImg = $this->helper('infortis/image');
+     $gc = $theme->getCfgGroup('category_grid');
+      //Default image size
+    $imgWidth = 295;
+    $imgHeight = 295;
+     
+?>  
+
+						<h2 class="selected-subcategory-title"><?php echo $_current_category->getName() ?></h2>
+						<div class="subcategory-showcase">
+                             <?php $imge_url= $_current_category->getImage();?>
+                                <?php if(!empty($imge_url)):?>
+                                    <img src="<?php echo Mage::getBaseUrl('media') . 'catalog' . DS . 'category' . DS . $_current_category->getImage() ?>" alt="<?php echo $this->htmlEscape($_current_category->getName()) ?>" width="460"/>
+                                <?php else:?>
+                                    <img  src="<?php echo $this->getSkinUrl('images/lookbook-showcase.jpg'); ?>" width="460"/>
+                                <?php endif;?>
+						</div>
+						<div class="subcategory-product-list">
+                            
+							<ul class="products-grid category-products-grid itemgrid itemgrid-adaptive itemgrid-2col centered hover-effect equal-height">
+                                
+                                 <?php foreach ($_productCollection as $_product): ?>
+                                  
+								   
+                                  <li class="item">          
+	                			   <div class="product-image-wrapper">
+										<a class="product-image" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true); ?>" href="<?php echo $_product->getProductUrl() ?>">
+											<img alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true); ?>" src="<?php echo $helpImg->getImg($_product, $imgWidth, $imgHeight, 'small_image'); ?>">
+										</a>
+		                    			<?php //Add-to links
+                                            if ($gc['display_addtolinks'] != 0 && $gc['addtolinks_simple'])
+                                            {
+                                                if ($gc['display_addtolinks'] == 1) //Display on hover
+                                                    echo $helpTemplate->getCategoryAddtoLinksComplex_2($_product, false, 'addto-links-icons addto-onimage display-onhover');
+                                                else //Always display
+                                                    echo $helpTemplate->getCategoryAddtoLinksComplex_2($_product, false, 'addto-links-icons addto-onimage');
+                                            }
+                                        ?>             
+		                    		</div> 
+		                    	
+                                    <h3 class="product-name">
+                                        <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($_product->getName(), null, true) ?>">
+                                            <?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?>
+                                        </a>
+                                    </h3>
+                                    
+		                            <?php if($_product->getRatingSummary()): ?>
+                                        <?php if ($gc['display_rating'] == 1): //Display on hover ?>
+                                            <div class="display-onhover"><?php echo $this->getReviewsSummaryHtml($_product, 'short') ?></div>
+                                        <?php elseif ($gc['display_rating'] == 2): //Always display ?>
+                                            <?php echo $this->getReviewsSummaryHtml($_product, 'short') ?>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+
+                                    <?php if ($gc['display_price'] == 1) echo '<div class="display-onhover">'; ?>
+                                        <?php echo $this->getPriceHtml($_product, true); ?>
+                                    <?php if ($gc['display_price'] == 1) echo '</div>'; ?>
+                                    
+				                </li>
+                                
+                                
+                                <?php endforeach; ?>
+							</ul>
+							<div class="clear"></div>
+						</div>
+						<div class="clear"></div>
+					
+	

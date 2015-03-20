@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Onetree_Core>
+            <version>0.1.0</version>
+        </Onetree_Core>
+    </modules>
+    <global>
+        <models>
+            <onetree_core>
+                <class>Onetree_Core_Model</class>
+                <resourceModel>onetree_core_resource</resourceModel>
+            </onetree_core>
+            <onetree_core_resource>
+                <class>Onetree_Core_Model_Resource</class>
+            </onetree_core_resource>
+            <core>
+                <rewrite>
+                    <layout>Onetree_Core_Model_Core_Layout</layout>
+                </rewrite>
+            </core>
+        </models>
+        <blocks>
+            <onetree_core>
+                <class>Onetree_Core_Block</class>
+            </onetree_core>
+        </blocks>
+        <helpers>
+            <onetree_core>
+                <class>Onetree_Core_Helper</class>
+            </onetree_core>
+        </helpers>
+    </global>
+</config>
